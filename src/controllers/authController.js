@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-const bcrypt = require('bcrypt'); // instead of bcryptjs
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { AppError } = require('../middleware/errorHandler');
