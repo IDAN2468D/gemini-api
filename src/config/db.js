@@ -8,8 +8,8 @@ const connectDB = async () => {
     });
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (err) {
-    console.error('Error connecting to MongoDB:', err.message);
-    process.exit(1);
+    console.error('Error connecting to MongoDB:', err);
+    process.exit(1); // עצור את האפליקציה אם לא הצלחת להתחבר
   }
 };
 
