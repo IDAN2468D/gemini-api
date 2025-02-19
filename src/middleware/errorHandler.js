@@ -1,10 +1,51 @@
-function errorHandler(err, req, res, next) {
-    console.error("❌ Server Error:", err.message);
+class AppError extends Error {
+    constructor(message, statusCode) {
+        super(message);
+        this.statusCode = statusCode;
+        this.status = `${statusCode}`.startsWith('4') ? 'fail' : 'error';
+        this.isOperational = true;
 
-    res.status(err.status || 500).json({
-        success: false,
-        error: err.message || "Internal Server Error",
-    });
+        Error.captureStackTrace(this, this.constructor);
+    }
 }
 
-module.exports = errorHandler;
+const handleError = (err, req, res, next) => {
+    err.statusCode = err.statusCode || 500;
+    err.status = err.status || 'error';
+
+    // MongoDB Duplicate Key Error
+    if (err.code === 11000) {
+        err.statusCode = 400;
+        err.message = 'Duplicate field value entered';
+    }
+
+    // MongoDB Validation Error
+    if (err.name === 'ValidationError') {
+        err.statusCode = 400;
+        err.message = Object.values(err.errors).map(val => val.message).join(', ');
+    }
+
+    if (process.env.NODE_ENV === 'development') {
+        res.status(err.statusCode).json({
+            status: err.status,
+            message: err.message,
+            error: err,
+            stack: err.stack
+        });
+    } else {
+        res.status(err.statusCode).json({
+            status: err.status,
+            message: err.isOperational ? err.message : 'Something went wrong!'
+        });
+    }
+};
+
+const errorHandler = (err, req, res, next) => {
+    console.error("❌ Server Error:", err.message);
+    handleError(err, req, res, next);
+};
+
+module.exports = {
+    AppError,
+    errorHandler
+};
