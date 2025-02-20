@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const geminiRoutes = require("./src/routes/geminiRoutes");
-// const handleError  = require("./src/middleware/errorHandler");
 const authRoutes = require('./src/routes/authRoutes'); 
 
 dotenv.config();
@@ -23,4 +22,4 @@ app.use('/api/auth', authRoutes);
 
 app.listen(PORT, HOST, () => {
     console.log(`Server running on http://${HOST}:${PORT}`);
-});
+  });  
