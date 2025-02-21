@@ -73,6 +73,23 @@ const register = async (req, res, next) => {
   }
 };
 
+// check-email route to check if email exists
+const checkEmailExists = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(200).json({ exists: true });
+    }
+
+    res.status(200).json({ exists: false });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
 // פונקציית התחברות
 const login = async (req, res, next) => {
   try {
@@ -163,5 +180,6 @@ module.exports = {
   register,
   login,
   updatePassword,
-  deleteUser
+  deleteUser,
+  checkEmailExists
 };

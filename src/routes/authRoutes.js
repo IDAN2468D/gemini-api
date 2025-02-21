@@ -12,9 +12,11 @@ const {
   register,
   login,
   updatePassword,
-  deleteUser
+  deleteUser,
+  checkEmailExists
 } = require('../controllers/authController');
 
+router.post('/check-email', checkEmailExists);
 router.post('/register', registerValidation, validate, register);
 router.post('/login', loginValidation, validate, login);
 router.put('/update-password', verifyToken, updatePasswordValidation, validate, updatePassword);
